@@ -1,0 +1,17 @@
+.content {
+    text-align: center;
+    margin: 30px;
+}
+
+ol {
+    display: inline-block;
+}
+
+input {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+#dataInput {
+    width: 90%;
+}

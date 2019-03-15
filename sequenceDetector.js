@@ -26,7 +26,7 @@ function UpdateList() {
         let list = DetectSequences();
         for (let i = 0; i < list.length; i++) {
             let listItem = document.createElement("li");
-            listItem.innerHTML = list[i] * (1 / frequency) + " seconds";
+            listItem.innerHTML = (list[i] * (1 / frequency)).toFixed(3) + " seconds";
             listElement.append(listItem);
         }
         RenderWaveForm();

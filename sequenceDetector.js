@@ -19,13 +19,14 @@ $(document).ready(function () {
 
 function UpdateList() {
     let listElement = $("#timeList");
+    let frequency = Number($("#frequencyInput").val());
     listElement.html("");
     $("#WaveDrom_Display_0").remove();
     if ($("#dataInput").val() !== "" && $("#frequencyInput").val() !== "") {
         let list = DetectSequences();
         for (let i = 0; i < list.length; i++) {
             let listItem = document.createElement("li");
-            listItem.innerHTML = list[i] + " seconds";
+            listItem.innerHTML = list[i] * (1 / frequency) + " seconds";
             listElement.append(listItem);
         }
         RenderWaveForm();
@@ -35,7 +36,6 @@ function UpdateList() {
 function DetectSequences() {
     let sequence = $("#sequenceInput").val();
     let data = $("#dataInput").val();
-    let frequency = Number($("#frequencyInput").val());
 
     let list = [];
 
@@ -46,7 +46,7 @@ function DetectSequences() {
         if (index === -1) {
             run = false;
         } else {
-            list.push((index + removedChars + sequence.length) * (1 / frequency));
+            list.push((index + removedChars + sequence.length));
             data = data.substring(index + 1, data.length);
             removedChars += index + 1;
         }
@@ -71,18 +71,16 @@ function RenderWaveForm() {
 
     let list = DetectSequences();
 
-    let sequence = "L"; //The wave showing where the sequences where detected
+    let sequence = "0"; //The wave showing where the sequences where detected
     for(let i = 0; i < data.length ; i++) {
         if(list.includes(i)) {
             sequence += "1";
         } else {
-            if(sequence[sequence.length - 1] === '1') {
-                sequence += "0";
-            } else {
-                sequence += ".";
-            }
+            sequence += "0";
         }
     }
+
+    sequence = ProduceWave(sequence);
 
     data += "xx";
 
@@ -96,6 +94,16 @@ function RenderWaveForm() {
         "}, \n" +
         "}");
     WaveDrom.ProcessAll()
+}
+
+function ProduceWave(data) {
+    for(let i = data.length - 1; i > 0; i--) {
+        if(data[i] == data[i-1]) {
+            data = data.replaceAt(i, ".");
+        }
+    }
+
+    return data;
 }
 
 String.prototype.replaceAt=function(index, replacement) {

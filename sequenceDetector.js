@@ -1,6 +1,24 @@
 $(document).ready(function () {
-    let dataInput = $("#dataInput");
+    let dataInput = $("#dataInput1");
     dataInput.focus();
+    dataInput.keyup(function () {
+        dataInput.val(dataInput.val().replace(/[^0-1]/, ''));
+        UpdateList();
+    });
+
+    dataInput = $("#dataInput2");
+    dataInput.keyup(function () {
+        dataInput.val(dataInput.val().replace(/[^0-1]/, ''));
+        UpdateList();
+    });
+
+    dataInput = $("#dataInput3");
+    dataInput.keyup(function () {
+        dataInput.val(dataInput.val().replace(/[^0-1]/, ''));
+        UpdateList();
+    });
+
+    dataInput = $("#dataInput4");
     dataInput.keyup(function () {
         dataInput.val(dataInput.val().replace(/[^0-1]/, ''));
         UpdateList();
@@ -20,10 +38,11 @@ $(document).ready(function () {
 function UpdateList() {
     let listElement = $("#timeList");
     let frequency = Number($("#frequencyInput").val());
+    let data1 = $("#dataInput1").val().trim();
     listElement.html("");
     $("#WaveDrom_Display_0").remove();
-    if ($("#dataInput").val() !== "" && $("#frequencyInput").val() !== "") {
-        let list = DetectSequences();
+    if (data1 !== "" && frequency !== 0) {
+        let list = DetectSequences(data1);
         for (let i = 0; i < list.length; i++) {
             let listItem = document.createElement("li");
             listItem.innerHTML = (list[i] * (1 / frequency)).toFixed(3) + " seconds";
@@ -33,9 +52,8 @@ function UpdateList() {
     }
 }
 
-function DetectSequences() {
+function DetectSequences(data) {
     let sequence = $("#sequenceInput").val();
-    let data = $("#dataInput").val();
 
     let list = [];
 
@@ -58,42 +76,76 @@ function DetectSequences() {
 function RenderWaveForm() {
     let el = $("#InputJSON_0");
     let clk = "P";
-    let data = $("#dataInput").val().trim();
-    for(let i = data.length - 1; i > 0; i--) {
-        if(data[i] == data[i-1]) {
-            data = data.replaceAt(i, ".");
-        }
-    }
-    data = "xx" + data; //The wave showing the input data
-    for(let i = 0; i < data.length; i++) {
+    let data1 = $("#dataInput1").val().trim();
+    let data2 = $("#dataInput2").val().trim();
+    let data3 = $("#dataInput3").val().trim();
+    let data4 = $("#dataInput4").val().trim();
+
+    //Get list of detected sequences
+    let list1 = DetectSequences(data1);
+    let list2 = DetectSequences(data2);
+    let list3 = DetectSequences(data3);
+    let list4 = DetectSequences(data4);
+
+    //Beautify waves
+    data1 = ProduceWave(data1);
+    data2 = ProduceWave(data2);
+    data3 = ProduceWave(data3);
+    data4 = ProduceWave(data4);
+
+    data1 = "xx" + data1; //The wave showing the input data
+    data2 = "xx" + data2;
+    data3 = "xx" + data3;
+    data4 = "xx" + data4;
+
+    let length = Math.max(data1.length, data2.length, data3.length, data4.length);
+
+    for (let i = 0; i < length; i++) {
         clk += ".";
     }
 
-    let list = DetectSequences();
+    //Draw sequence waveforms
+    let sequence1 = ProduceWave(GetSequence(data1, list1));
+    let sequence2 = ProduceWave(GetSequence(data2, list2));
+    let sequence3 = ProduceWave(GetSequence(data3, list3));
+    let sequence4 = ProduceWave(GetSequence(data4, list4));
 
-    let sequence = "0"; //The wave showing where the sequences where detected
-    for(let i = 0; i < data.length ; i++) {
-        if(list.includes(i)) {
-            sequence += "1";
-        } else {
-            sequence += "0";
-        }
-    }
-
-    sequence = ProduceWave(sequence);
-
-    data += "xx";
+    data1 += "xx";
+    data2 += "xx";
+    data3 += "xx";
+    data4 += "xx";
 
     el.html("{ signal : [\n" +
         "  { name: \"clk\",  wave: \"" + clk + "\" },\n" +
-        "  { name: \"Data\",  wave: \"" + data +"\", phase: \"1.0\" },\n" +
-        "  { name: \"Sequence Detected\",  wave: \"" + sequence +"\" },\n" +
+        "  { name: \"Data 1\",  wave: \"" + data1 + "\", phase: \"1.0\" },\n" +
+        "  { name: \"Sequence Detected 1\",  wave: \"" + sequence1 + "\" },\n" +
+        "  { name: \"Data 2\",  wave: \"" + data2 + "\", phase: \"1.0\" },\n" +
+        "  { name: \"Sequence Detected 2\",  wave: \"" + sequence2 + "\" },\n" +
+        "  { name: \"Data 3\",  wave: \"" + data3 + "\", phase: \"1.0\" },\n" +
+        "  { name: \"Sequence Detected 3\",  wave: \"" + sequence3 + "\" },\n" +
+        "  { name: \"Data 4\",  wave: \"" + data4 + "\", phase: \"1.0\" },\n" +
+        "  { name: \"Sequence Detected 4\",  wave: \"" + sequence4 + "\" },\n" +
         "], \n" +
         "head: {\n" +
         "tick: -1, \n" +
         "}, \n" +
         "}");
     WaveDrom.ProcessAll()
+}
+
+/**
+ * @return {string}
+ */
+function GetSequence(data, list) {
+    let sequence = "0"; //The wave showing where the sequences where detected
+    for (let i = 0; i < data.length; i++) {
+        if (list.includes(i)) {
+            sequence += "1";
+        } else {
+            sequence += "0";
+        }
+    }
+    return sequence;
 }
 
 function ProduceWave(data) {

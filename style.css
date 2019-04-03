@@ -23,3 +23,7 @@ input {
 #dataInput {
     width: 90%;
 }
+
+#WaveDrom_Display_0 {
+    overflow-x: scroll;
+}

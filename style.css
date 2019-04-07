@@ -3,6 +3,10 @@
     margin: 30px;
 }
 
+#timeTable {
+    display: inline-block;
+}
+
 ol {
     display: inline-block;
     background: #ff9999;
@@ -31,4 +35,30 @@ input {
 
 #WaveDrom_Display_0 {
     overflow-x: scroll;
+}
+
+#timeTable {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+}
+
+#timeTable td, #timeTable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#timeTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#timeTable tr:hover {
+    background-color: #ddd;
+}
+
+#timeTable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
 }

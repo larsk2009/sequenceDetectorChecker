@@ -87,7 +87,53 @@ function parseLargeInput(text) {
         "}, \n" +
         "}";
     $("#InputJSON_0").html(waveDromText);
-    WaveDrom.ProcessAll()
+    WaveDrom.ProcessAll(lines);
+
+    DrawTable(lines);
+}
+
+function DrawTable(lines) {
+    let table = $("#timeTable");
+
+    table.html("");
+    let headerRow = document.createElement("tr");
+    let cell = document.createElement("th");
+    cell.innerHTML = "puls";
+    headerRow.append(cell);
+
+    let detections = [];
+    let length = 0;
+
+    for (let i = 0; i < lines.length; i += 2) {
+        let detect = DetectSequences(lines[i + 1]);
+        detections[i] = detect;
+        length = Math.max(length, detect.length);
+    }
+
+    for (let i = 0; i < lines.length; i += 2) {
+        cell = document.createElement("th");
+        cell.innerHTML = lines[i];
+        headerRow.append(cell);
+    }
+
+    table.append(headerRow);
+    let frequency = Number($("#frequencyInput").val());
+
+    for (let i = 0; i < length; i++) {
+        let row = document.createElement("tr");
+        let cell = document.createElement("td");
+        cell.innerHTML = i + 1;
+        row.append(cell);
+        for (let j = 0; j < lines.length; j += 2) {
+            cell = document.createElement("td");
+            cell.innerHTML = (detections[j][i] * (1 / frequency)).toFixed(3) + " seconds";
+            if (cell.innerHTML === "NaN seconds") {
+                cell.innerHTML = "";
+            }
+            row.append(cell);
+        }
+        table.append(row);
+    }
 }
 
 function UpdateList() {

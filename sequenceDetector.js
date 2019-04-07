@@ -27,13 +27,68 @@ $(document).ready(function () {
     let sequenceInput = $("#sequenceInput");
     sequenceInput.keyup(function () {
         sequenceInput.val(sequenceInput.val().replace(/[^0-1]/, ''));
-        UpdateList();
+        //UpdateList();
+        parseLargeInput($("#largeInput").val());
     });
 
     $("#frequencyInput").keyup(function () {
-        UpdateList();
+        //UpdateList();
+        parseLargeInput($("#largeInput").val());
+    });
+
+    $("#largeInput").keyup(function () {
+        parseLargeInput($("#largeInput").val());
     });
 });
+
+function parseLargeInput(text) {
+    let lines = text.split('\n');
+    let length = 0;
+    let waveDromText = "";
+
+    let listElement = $("#timeList");
+    let frequency = Number($("#frequencyInput").val());
+    listElement.html("");
+    $("#WaveDrom_Display_0").remove();
+
+    if (frequency === 0) {
+        return;
+    }
+
+    for (let i = 0; i < lines.length; i += 2) {
+        let label = lines[i];
+        let data = lines[i + 1];
+
+        let detectionList = DetectSequences(data);
+        let wave = ProduceWave(data);
+        wave = "xx" + wave;
+
+        let sequenceWave = ProduceWave(GetSequence(wave, detectionList));
+
+        wave = wave + "xx";
+
+        length = Math.max(wave.length, length);
+
+        waveDromText += "  { name: \"" + label + "\",  wave: \"" + wave + "\", phase: \"1.0\" },\n" +
+            "  { name: \"Sequence " + label + "\",  wave: \"" + sequenceWave + "\" },\n";
+    }
+
+    let clk = "P";
+    //Generate clock data
+    for (let i = 0; i < length; i++) {
+        clk += ".";
+    }
+
+    waveDromText = "{ signal : [\n" +
+        "  { name: \"clk\",  wave: \"" + clk + "\" },\n" +
+        waveDromText + "], \n" +
+        "head: {\n" +
+        "tick: -1, \n" +
+        "}, \n" +
+        "}";
+    $("#InputJSON_0").html(waveDromText);
+    WaveDrom.ProcessAll()
+}
 
 function UpdateList() {
     let listElement = $("#timeList");

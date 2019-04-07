@@ -1,26 +1,26 @@
 $(document).ready(function () {
-    let dataInput = $("#dataInput1");
-    dataInput.focus();
-    dataInput.keyup(function () {
-        dataInput.val(dataInput.val().replace(/[^0-1]/, ''));
+    let dataInput1 = $("#dataInput1");
+    dataInput1.focus();
+    dataInput1.keyup(function () {
+        dataInput1.val(dataInput1.val().replace(/[^0-1]/, ''));
         UpdateList();
     });
 
-    dataInput = $("#dataInput2");
-    dataInput.keyup(function () {
-        dataInput.val(dataInput.val().replace(/[^0-1]/, ''));
+    let dataInput2 = $("#dataInput2");
+    dataInput2.keyup(function () {
+        dataInput2.val(dataInput2.val().replace(/[^0-1]/, ''));
         UpdateList();
     });
 
-    dataInput = $("#dataInput3");
-    dataInput.keyup(function () {
-        dataInput.val(dataInput.val().replace(/[^0-1]/, ''));
+    let dataInput3 = $("#dataInput3");
+    dataInput3.keyup(function () {
+        dataInput3.val(dataInput3.val().replace(/[^0-1]/, ''));
         UpdateList();
     });
 
-    dataInput = $("#dataInput4");
-    dataInput.keyup(function () {
-        dataInput.val(dataInput.val().replace(/[^0-1]/, ''));
+    let dataInput4 = $("#dataInput4");
+    dataInput4.keyup(function () {
+        dataInput4.val(dataInput4.val().replace(/[^0-1]/, ''));
         UpdateList();
     });
 

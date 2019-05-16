@@ -51,7 +51,9 @@ function parseLargeInput(text) {
     listElement.html("");
     $("#WaveDrom_Display_0").remove();
 
-    if (frequency === 0) {
+    let sequence = Number($("#sequenceInput").val());
+
+    if (frequency === 0 || sequence == 0) {
         return;
     }
 
